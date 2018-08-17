@@ -67,10 +67,9 @@
         new BScroll('.navbar',{
           click:true,
         })
-        // new BScroll('.detail-container',{
-        //   click:true
-        // })
-
+        new BScroll('.detail-container',{
+          click:true
+        })
       }
     }
   }
@@ -108,6 +107,7 @@
         .iconfont
           font-size 0.28rem
     .sidebar-container
+      margin-top 0.88rem
       width 100%
       .sidebar
         position fixed
@@ -132,41 +132,45 @@
               &:last-child
                 margin-bottom 0
 
-      .sidebar-detail
-        margin-top 0.88rem
+
+      .detail-container
         width 5.88rem
         height 12.46rem
         margin-left 1.62rem
-        box-sizing border-box
-        padding 0.3rem 0.3rem 0.21rem
-        .cate-pic
-          width 5.28rem
-          height 1.92rem
-          margin-bottom 0.32rem
-          img
-            width 100%
-            height 100%
-        .cate-product
-          width 5.28rem
-          ul
-            width 100%
+        .sidebar-detail
+          width 100%
+          box-sizing border-box
+          padding 0.3rem 0.3rem 0.21rem
+          .cate-pic
+            width 5.28rem
+            height 1.92rem
+            margin-bottom 0.32rem
+            img
+              width 100%
+              height 100%
+          .cate-product
+            width 5.28rem
             display flex
-            flex-flow row wrap
-            justify-content space-between
-            .good-item
-              width 1.44rem
-              height 2.16rem
-              text-align center
-              img
+            flex-flow  column nowrap
+            ul
+              width 100%
+              display flex
+              flex-flow row wrap
+              justify-content space-between
+              .good-item
                 width 1.44rem
-                height 1.44rem
-              .pic-text
-                font-size .24rem
-                color #333
-                display -webkit-box
-                -webkit-line-clamp 2
-                -webkit-box-orient vertical
-                overflow hidden
-                text-overflow ellipsis
+                height 2.16rem
+                text-align center
+                img
+                  width 1.44rem
+                  height 1.44rem
+                .pic-text
+                  font-size .24rem
+                  color #333
+                  display -webkit-box
+                  -webkit-line-clamp 2
+                  -webkit-box-orient vertical
+                  overflow hidden
+                  text-overflow ellipsis
 
 </style>
