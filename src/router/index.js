@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-// import InterPage from '../pages/InterPage/InterPage.vue'
+import InterPage from '../pages/InterPage/InterPage.vue'
 import Home from '../pages/Home/Home.vue'
 import ShiWu from '../pages/ShiWu/ShiWu.vue'
 import Category from '../pages/Category/Category.vue'
@@ -13,16 +13,16 @@ Vue.use(Router)
 
 export default new Router({
   mode: 'history',
-  routes: [
-    // {
-    //   path: '/interpage',
-    //   component: InterPage
-    // },
+ routes: [
+    {
+      path:'/interpage',
+      component:InterPage
+    },
     {
       path: '/home',
       component: Home,
       meta:{
-        showFoot:true
+       showFoot:true
       }
     },
     {
@@ -46,14 +46,14 @@ export default new Router({
         showFoot:true
       }
     },
-     {
+    {
       path: '/profile',
       component: Profile
     },
     {
       path: '/',
-      redirect:'/home'
+      redirect:'/interpage'
     },
 
-  ]
+ ]
 })

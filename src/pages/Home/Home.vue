@@ -1,5 +1,35 @@
 <template>
   <div class="home">
+  <transition name="fade">
+    <div class="shade" v-if="isShadeShow">
+      <span class="error" @click ="isShadeShow = false"></span>
+      <div class="wrap_container">
+        <div class="modal">
+          <div class="new_people">
+            <span></span>
+            <span>新人专享</span>
+            <span></span>
+          </div>
+          <div class="thank">感谢使用网易严选, 已为你准备了一份专享礼</div>
+          <div class="pdt-detail">
+            <img src="http://yanxuan.nosdn.127.net/149ac83f4c4b6d1e72e63b57cc543c87.jpg?imageView&quality=85&thumbnail=232y232" alt="">
+            <div class="des_price">
+              <span>轻质方形男式墨镜</span>
+              <span>Fendi制造商</span>
+              <div class="new_old_price">
+                <span>¥99.00</span>
+                <span>¥360.00</span>
+              </div>
+            </div>
+          </div>
+          <div class="reduce">
+            <span>领券立减¥34.00</span>
+          </div>
+          <div class="look_more">查看更多特惠商品</div>
+        </div>
+      </div>
+    </div>
+  </transition>
     <div class="home-header">
       <div class="logo">
         <h2>网易严选</h2>
@@ -150,15 +180,15 @@
         <div class="limit-time">
           <span>严选限时购</span>
           <div class="time">
-            <span>00</span>
+            <span>{{downTime.hour}}</span>
             <span>:</span>
-            <span>00</span>
+            <span>{{downTime.minute}}</span>
             <span>:</span>
-            <span>00</span>
+            <span>{{downTime.second}}</span>
           </div>
           <div class="next">
             <span>下一场</span>
-            <span>10:00</span>
+            <span>{{startTime.hour}}:00</span>
             <span>开始</span>
           </div>
         </div>
@@ -247,7 +277,18 @@
     data(){
       return{
         isShow:true,
-        activeIndex:0
+        activeIndex:0,
+        isShadeShow:true,
+        startTime:{
+          hour:10,
+          minute:0,
+          second:0
+        },
+        downTime:{
+          hour:0,
+          minute:0,
+          second:0
+        }
       }
     },
     computed:{
@@ -255,12 +296,34 @@
 
     },
     mounted(){
+      //倒计时
+      this.startTime = {
+        hour: (new Date().getHours() + 4) > 10
+          ? (new Date().getHours() + 4)
+          : '0' + (new Date().getHours() + 4),
+        minute:0,
+        second:0
+      }
+      this.timer = setInterval(()=>{
+        let downTime =  new Date();
+        let hour = (this.startTime.hour - downTime.getHours() -1) > 9
+          ? (this.startTime.hour - downTime.getHours() -1)
+          : '0' + (this.startTime.hour - downTime.getHours() -1)
+        let minute = (59 - downTime.getMinutes()) > 9
+          ? (59 - downTime.getMinutes())
+          : '0' + (59 - downTime.getMinutes())
+        let second = (59 - downTime.getSeconds() ) > 9
+          ? (59 - downTime.getSeconds() )
+          : '0' + (59 - downTime.getSeconds() )
+        this.downTime = {hour,minute,second}//初始状态是对象
+      },1000)
+
+
       this.$store.dispatch('getData',()=>{
         this.$nextTick(()=>{
           this._initScroll()
         })
       })
-
 
       this.$store.dispatch('getCarousel',()=>{
         this.$nextTick(()=>{
@@ -282,7 +345,9 @@
           this._initScroll()
         })
       })
-
+    },
+    destroyed(){
+      clearInterval( this.timer )
     },
     methods:{
       navToggle(activeIndex){
@@ -319,60 +384,183 @@
 
 <style lang="stylus" rel="stylesheet/stylus">
   @import "../../common/stylus/mixins.styl"
-  .home
+.home
+  width 100%
+  height 100%
+  position relative
+  background-color #f4f4f4
+  .shade
+    position fixed
+    top 0
+    left 0
     width 100%
-    position relative
-    background-color #F4F4F4
-    .home-header
-      width 100%
-      height 1.48rem
+    height 100%
+    z-index 9999
+    opacity 1
+    background rgba(127, 127, 127,0.5)
+    &.fade-enter-active, &.fade-leave-active
+      transition: all 0.5s
+    &.fade-enter, &.fade-leave-to
+      opacity: 0
+    .error
+      display block
+      width 0.64rem
+      height 0.64rem
       position fixed
+      top 0.6rem
+      right 0.3rem
+      vertical-align middle
+      background-size 100% 100%
+      background-repeat no-repeat
+      background-image url("//yanxuan-static.nosdn.127.net/hxm/yanxuan-wap/p/20161201/style/img/icon-normal/modalClose-9365f12572.png")
+    .wrap_container
+      width 6.3rem
+      height 6.92rem
       background-color #fff
-      z-index 20
-      .logo
-        /*height 0.88rem*/
+      transform translate(-50%,-50%)
+      position absolute
+      top 50%
+      left 50%
+      z-index 1
+      .modal
+        width 100%
+        height 100%
         box-sizing border-box
-        padding 0.16rem 0.3rem
+        padding 0.3rem 0.24rem
         display flex
-        flex-flow row nowrap
-        -webkit-box-align center
         align-items center
-        h2
-          width 1.38rem
-          height 0.4rem
-          font-size 0.34rem
-          margin-right 0.2rem
-        .search
-          width 5.32rem
-          height 0.56rem
+        justify-content center
+        flex-direction column
+        .new_people
+          width 5.82rem
+          height 0.59rem
+          line-height 0.59rem
           text-align center
-          line-height 0.56rem
-          background-color #ededed
-          border-radius 0.1rem
-          color #666
-          .iconfont
-            font-size 0.28rem
-      .header-nav
-        height 0.6rem
-        padding 0 0.3rem
-        display flex
-        bottom-border-1px(#DADADA)
-        .nav-list
-          display flex
-          align-items center
-          >li
-            width 0.88rem
+          span
+            display inline-block
+            font-size 0.4rem
             color #333
-            height 0.6rem
-            margin  0 0.3rem
+            font-weight  bold
+            &:first-child,&:last-child
+              width 0.37rem
+              height 0.2rem
+              margin 0 0.1rem
+              text-align center
+              font-weight  bold
+              bottom-border-1px(#000)
+              transform translateY(-50%)
+        .thank
+          width 100%
+          font-size 0.24rem
+          text-align center
+          margin-top 0.04rem
+        .pdt-detail
+          width 100%
+          height 2.32rem
+          margin-top 0.5rem
+          display flex
+          img
+            width 2.32rem
+            height 100%
+          .des_price
+            width 3.42rem
+            height 100%
+            margin-left 0.08rem
             box-sizing border-box
-            font-size 0.28rem
-            text-align center
-            line-height 0.6rem
-            &.active
-              padding: 0 0 0.12rem 0;
-              border-bottom: 0.01rem solid #b4282d;
-              color: #b4282d;
+            padding 0.43rem 0
+            >span
+              display block
+              font-size 0.28rem
+              text-align left
+              &:nth-child(2)
+                margin-top 0.15rem
+                width 1.6rem
+                height 0.41rem
+                border 0.01rem solid #CECECE
+            .new_old_price
+              width 3.42rem
+              margin-top 0.2rem
+              span
+                width 0.86rem
+                display inline-block
+                font-size 0.24rem
+                &:nth-child(1)
+                  color #BE484C
+                &:nth-child(2)
+                  color #999999
+                  middle-border-1px(#999999)
+        .reduce
+          width 100%
+          height 0.88rem
+          margin-top 0.4rem
+          background-color #B4282D
+          text-align center
+          line-height 0.88rem
+          >span
+            display inline-block
+            font-size 0.32rem
+            color #fff
+        .look_more
+          width 100%
+          height 0.88rem
+          margin-top 0.24rem
+          text-align center
+          line-height 0.88rem
+          font-size 0.32rem
+          border 0.01rem solid #CECECE
+
+  .home-header
+    width 100%
+    height 1.48rem
+    position fixed !important
+    top 0
+    left 0
+    z-index 20
+    background-color #fff
+    .logo
+      /*height 0.88rem*/
+      box-sizing border-box
+      padding 0.16rem 0.3rem
+      display flex
+      flex-flow row nowrap
+      -webkit-box-align center
+      align-items center
+      h2
+        width 1.38rem
+        height 0.4rem
+        font-size 0.34rem
+        margin-right 0.2rem
+      .search
+        width 5.32rem
+        height 0.56rem
+        text-align center
+        line-height 0.56rem
+        background-color #ededed
+        border-radius 0.1rem
+        color #666
+        .iconfont
+          font-size 0.28rem
+    .header-nav
+      height 0.6rem
+      padding 0 0.3rem
+      display flex
+      bottom-border-1px(#DADADA)
+      .nav-list
+        display flex
+        align-items center
+        >li
+          width 0.88rem
+          color #333
+          height 0.6rem
+          margin  0 0.3rem
+          box-sizing border-box
+          font-size 0.28rem
+          text-align center
+          line-height 0.6rem
+          &.active
+            padding: 0 0 0.12rem 0;
+            border-bottom: 0.01rem solid #b4282d;
+            color: #b4282d;
 
 
   .home-content
@@ -381,7 +569,7 @@
       margin-top 1.5rem
       position absolute
       background #fff
-      z-index 5
+      /*z-index 5*/
       /*部分一*/
       .content-one
         width 100%
@@ -621,13 +809,13 @@
                 font-size 0.32rem
               &:nth-child(1),&:nth-child(3),&:nth-child(5)
                 display inline-block
-                width 0.62rem
+                width 0.64rem
                 height 0.56rem
                 text-align center
                 line-height 0.56rem
                 font-size 0.32rem
                 color #fff
-                background #444444
+                background #444
         .show-img
           position relative
           width 3.2rem
@@ -862,4 +1050,5 @@
             &:nth-child(1),&:nth-child(2)
               display inline-block
               transform translateX(1.2rem)
+
 </style>
